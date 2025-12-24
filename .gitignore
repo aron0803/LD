@@ -1,0 +1,39 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.dll
+*.exe
+*.zip
+*.rar
+
+# C# build artifacts
+bin/
+obj/
+packages/
+
+# Python build artifacts
+build/
+dist/
+*.spec
+TraceLD.build/
+TraceLD.dist/
+build_nuitka/
+
+# Logs
+*.txt
+*.log
+*.xml
+
+# Configs (optional, but often excluded)
+# trace.ini
+# png_selected.json
+
+# Local environment
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
