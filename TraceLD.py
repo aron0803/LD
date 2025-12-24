@@ -127,7 +127,13 @@ class TraceLDApp:
         self.worker_thread = None
         self.ld_manager = None
         self.matcher = ImageMatcher()
-        if getattr(sys, 'frozen', False):
+        # For Nuitka onefile: use the original exe location, not temp extraction dir
+        # Check if running as compiled exe by looking at sys.argv[0]
+        exe_path = sys.argv[0] if sys.argv else sys.executable
+        if exe_path.lower().endswith('.exe'):
+            # Running as compiled exe - use argv[0] which has the real path
+            self.script_dir = os.path.dirname(os.path.abspath(exe_path))
+        elif getattr(sys, 'frozen', False):
             self.script_dir = os.path.dirname(sys.executable)
         else:
             self.script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -180,10 +186,9 @@ class TraceLDApp:
         lists_frame = ttk.Frame(main_frame)
         lists_frame.pack(fill=BOTH, expand=YES, pady=5)
 
-        # Emulator List (Left)
-        emu_group = ttk.Labelframe(lists_frame, text="模擬器選擇", padding=5, width=180)
-        emu_group.pack(side=LEFT, fill=BOTH, expand=NO, padx=(0, 5)) # Narrower
-        emu_group.pack_propagate(False)
+        # Emulator List (Left) - same width as image list
+        emu_group = ttk.Labelframe(lists_frame, text="模擬器選擇", padding=5)
+        emu_group.pack(side=LEFT, fill=BOTH, expand=YES, padx=(0, 5))
         
         self.emu_list_frame = ttk.Frame(emu_group)
         self.emu_list_frame.pack(fill=BOTH, expand=YES)
@@ -210,9 +215,9 @@ class TraceLDApp:
         ttk.Button(emu_btn_frame, text="全不選", command=self.deselect_all_emus, width=6).pack(side=LEFT, padx=1)
         ttk.Button(emu_btn_frame, text="整理", command=self.refresh_emulators, width=6).pack(side=LEFT, padx=1)
 
-        # Image List (Right)
+        # Image List (Right) - same width as emulator list
         img_group = ttk.Labelframe(lists_frame, text="比對清單 (優先順序)", padding=5)
-        img_group.pack(side=LEFT, fill=BOTH, expand=YES, padx=(5, 0)) # Wider
+        img_group.pack(side=LEFT, fill=BOTH, expand=YES, padx=(5, 0))
         
         img_list_container = ttk.Frame(img_group)
         img_list_container.pack(fill=BOTH, expand=YES)

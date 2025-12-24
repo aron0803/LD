@@ -59,7 +59,18 @@ def match(cap, pic2_path, threshold=0.98):
         return (0, 0)
 
 # ==================== Config 處理 ====================
-config_path = "config.ini"
+# Detect script directory for Nuitka onefile compatibility
+import sys
+exe_path = sys.argv[0] if sys.argv else sys.executable
+if exe_path.lower().endswith('.exe'):
+    # Running as compiled exe - use argv[0] which has the real path
+    script_dir = os.path.dirname(os.path.abspath(exe_path))
+elif getattr(sys, 'frozen', False):
+    script_dir = os.path.dirname(sys.executable)
+else:
+    script_dir = os.path.dirname(os.path.abspath(__file__)) if '__file__' in dir() else os.getcwd()
+
+config_path = os.path.join(script_dir, "config.ini")
 config = ConfigParser()
 if os.path.exists(config_path):
     config.read(config_path)
@@ -115,7 +126,7 @@ def load_png_files():
         widget.destroy()
     png_vars.clear()
 
-    png_directory = os.path.join(os.getcwd(), 'pic')
+    png_directory = os.path.join(script_dir, 'pic')
     if not os.path.exists(png_directory):
         os.makedirs(png_directory)
     png_files = [f for f in os.listdir(png_directory) if f.endswith('.png')]
@@ -166,7 +177,7 @@ def run_script():
             if x:
                 while running:
                     for png_file in selected_pngs:
-                        png_path = os.path.join(os.getcwd(), 'pic', png_file)
+                        png_path = os.path.join(script_dir, 'pic', png_file)
                         update_status(f"判斷 {png_file}")
                         x, y = match(cap, png_path, 0.98)
                         if x:

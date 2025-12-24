@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 *.dll
 *.exe
+!Release_*/*.exe
 *.zip
 *.rar
 
